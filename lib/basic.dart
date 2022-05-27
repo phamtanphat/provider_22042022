@@ -46,7 +46,12 @@ class Demo2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    // Dang 2 : lay data qua widget
+    return Consumer<int>(
+        builder: (context, data, child){
+          return Text("Demo 3 has value $data");
+        }
+    );
   }
 }
 
