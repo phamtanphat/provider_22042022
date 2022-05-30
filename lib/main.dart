@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider_22042022/basic.dart';
+import 'package:provider_22042022/proxy_provider.dart';
 
 import 'demo_changenotifier_provider.dart';
 
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: DemoChangeNotifier()
+      home: DemoProxyProvider()
     );
   }
 }
