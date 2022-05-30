@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ApiService1 {
   String callApi() {
@@ -47,16 +48,46 @@ class DemoProxyProvider extends StatelessWidget {
         appBar: AppBar(
           title: Text("Demo Proxy"),
         ),
-        body: DemoProxyContainer()
+        body: MultiProvider(
+          providers: [
+            Provider(create: (context) => ApiService1()),
+            ProxyProvider<ApiService1,Repository>(
+                create: (context) => Repository(),
+                update: (context, apiService, repository) {
+                  repository!.updateApiService(apiService: apiService);
+                  return repository;
+                }
+            ),
+            ProxyProvider<Repository,DemoViewModel>(
+                create: (context) => DemoViewModel(),
+                update: (context, repository, viewModel) {
+                  viewModel!.updateRepository(repository: repository);
+                  return viewModel;
+                }
+            ),
+          ],
+            child: DemoProxyContainer()
+        )
     );
   }
 }
 
-class DemoProxyContainer extends StatelessWidget {
+class DemoProxyContainer extends StatefulWidget {
 
   @override
-  Widget build(BuildContext context) {
+  _DemoProxyContainerState createState() => _DemoProxyContainerState();
+}
 
+class _DemoProxyContainerState extends State<DemoProxyContainer> {
+  late DemoViewModel  viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    viewModel = context.read();
+  }
+  @override
+  Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints.expand(),
       child: Column(
@@ -66,7 +97,8 @@ class DemoProxyContainer extends StatelessWidget {
           Text("Data"),
           ElevatedButton(
               onPressed: (){
-
+                String data = viewModel.repository.apiService.callApi();
+                print(data);
               },
               child: Text("Call Api")
           )
